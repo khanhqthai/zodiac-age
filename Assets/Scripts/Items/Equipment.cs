@@ -13,8 +13,10 @@ public class Equipment : Item
     public override void Use()
     {
         base.Use();
+
         // equip the item
-        // remove from the inventory
+        EquipmentManager.instance.Equip(this);
+        RemoveFromInventory();
     }
 }
 

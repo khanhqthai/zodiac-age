@@ -18,4 +18,10 @@ public class Item : ScriptableObject
         // ie. potions item heal, town portal item teleport
         Debug.Log("Using " + name);
     }
+
+
+    public void RemoveFromInventory() 
+    {
+        Inventory.instance.Remove(this);
+    }
 }

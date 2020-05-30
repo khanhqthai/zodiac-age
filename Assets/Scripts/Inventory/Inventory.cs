@@ -23,7 +23,7 @@ public class Inventory : MonoBehaviour
     public List<Item> items = new List<Item>();
     public int inventorySpace = 10;
 
-    // delegate to we can notify subscribers of (event)changes in the inventory
+    // delegate to notify subscribers of (event)changes in the inventory
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallBack;
 
