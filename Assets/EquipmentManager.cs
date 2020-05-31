@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/* Keeps track of equipment. Has functions for removing and adding items*/
 public class EquipmentManager : MonoBehaviour
 {
     //singleton pattern
@@ -12,7 +13,12 @@ public class EquipmentManager : MonoBehaviour
         instance = this;
     }
 
-    Equipment[] currentEquipment;
+    public Equipment[] defaultItems;
+    public SkinnedMeshRenderer targetMesh;
+
+    private Equipment[] currentEquipment; // Items we currently have equiped
+    private SkinnedMeshRenderer[] currentMeshes; 
+    
 
     // delegate to notify subscribers of (event)changes in Equipment
     public delegate void OnEquipmentChanged(Equipment newItem, Equipment oldItem);
@@ -22,45 +28,56 @@ public class EquipmentManager : MonoBehaviour
     private void Start()
     {
         inventory = Inventory.instance;
+
+        // intiliazed our equipment array with size from Equipment slot enum
         int numSlots = System.Enum.GetNames(typeof(EquipmentSlot)).Length;
-        currentEquipment = new Equipment[numSlots]; // intiliazed our equipment array with size from Equipment slot enum
+        currentEquipment = new Equipment[numSlots];
+
+        currentMeshes = new SkinnedMeshRenderer[numSlots];
+        EquipDefaultItems();
     }
 
     public void Equip(Equipment newItem) 
     {
+        // Find out what slot the item fits in
         // We can get index value from Enum(ie. Head =0 , Chest = 1...)
         int slotIndex = (int) newItem.equipSlot;
+       
+        Equipment oldItem = Unequip(slotIndex);
 
-        Equipment oldItem = null;
 
-        // before we equip the new item
-        // we want to check if the player already has an item equiped in slot
-        // if so, we will move that item back to  the inventory before equiping the new item.
-        if (currentEquipment[slotIndex]!=null) 
-        {
-           
-            oldItem = currentEquipment[slotIndex];
-            inventory.Add(oldItem);
-        }
-
-        // notify subcribers of changes
+        // An item has been equiped, so we notify subcribers of change using callback
         if (onEquipmentChanged != null) 
         {
             onEquipmentChanged.Invoke(newItem, oldItem);
         }
 
-        currentEquipment[slotIndex] = newItem;
- 
+        
+        SetEquipmentBlendShapes(newItem,90);
+
+        currentEquipment[slotIndex] = newItem; // insert item into slot
+        SkinnedMeshRenderer newMesh = Instantiate<SkinnedMeshRenderer>(newItem.mesh);
+        newMesh.transform.parent = targetMesh.transform;
+        newMesh.bones = targetMesh.bones;
+        newMesh.rootBone = targetMesh.rootBone;
+
+        currentMeshes[slotIndex] = newMesh;
     }
 
-    public void Unequip(int slotIndex) 
+    public Equipment Unequip(int slotIndex) 
     {
         // check if there is an item equiped at the slot index
         // if so, then remove, and put back into the inventory
         if (currentEquipment[slotIndex] != null) 
         {
-            Equipment oldItem = currentEquipment[slotIndex];
             
+            if (currentMeshes[slotIndex] != null) 
+            {
+                Destroy(currentMeshes[slotIndex].gameObject);
+            }
+
+            Equipment oldItem = currentEquipment[slotIndex];
+            SetEquipmentBlendShapes(oldItem, 0);
             inventory.Add(oldItem); // item back to inventory
             currentEquipment[slotIndex] = null; // remove item from slot by setting to null
 
@@ -69,7 +86,9 @@ public class EquipmentManager : MonoBehaviour
             {
                 onEquipmentChanged.Invoke(null, oldItem);
             }
+            return oldItem;    
         }
+        return null;
     }
 
     public void UnequipAll() 
@@ -77,10 +96,13 @@ public class EquipmentManager : MonoBehaviour
         for (int i = 0; i < currentEquipment.Length; i++)
         {
             Unequip(i);
+            
         }
+        EquipDefaultItems(); // equip default item, when player unequip all current items
+
     }
 
-    public void Update() 
+    private void Update() 
     {
         // pressing "U" on keyboard will unequip all items
         if (Input.GetKeyDown(KeyCode.U)) 
@@ -88,5 +110,25 @@ public class EquipmentManager : MonoBehaviour
             UnequipAll();
         }
     }
+
+    // shrinks body mesh, so equipment can fit better.. don't really it, since our character is already small
+    // and modeled correctly. But here just incase
+    private void SetEquipmentBlendShapes(Equipment item, int weight)
+    {
+        foreach (EquipmentMeshRegion blendShape in item.coveredMeshRegions)
+        {
+            targetMesh.SetBlendShapeWeight((int)blendShape, weight);
+        }
+    }
+
+    //
+    public void EquipDefaultItems() 
+    {
+        foreach (Equipment item in defaultItems)
+        {
+            Equip(item);
+        }
+    }
+
 
 }

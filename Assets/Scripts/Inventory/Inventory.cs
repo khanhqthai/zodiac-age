@@ -29,6 +29,7 @@ public class Inventory : MonoBehaviour
 
     public bool Add(Item item) 
     {
+        // only add item, if is not a default item, and if inventory has enough space
         if (!item.isDefaultItem) 
         {
             if (items.Count >= inventorySpace) 

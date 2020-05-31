@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e69ad7f75be6094b8c559eaca697013, type: 3}
-  m_Name: Iron Sword
+  m_Name: Gloves
   m_EditorClassIdentifier: 
-  name: Iron Sword
-  icon: {fileID: 21300000, guid: 5fd50594014b70e48bd6993443d46b32, type: 3}
+  name: Gloves
+  icon: {fileID: 21300000, guid: d4f5634edede200468fc1ccf30e6f3a1, type: 3}
   isDefaultItem: 0
-  equipSlot: 3
+  equipSlot: 2
+  mesh: {fileID: 8369559136705072077, guid: 2c840b2e658230940beaf98e19096e30, type: 3}
+  coveredMeshRegions: 01000000
   armorModifier: 0
   damageModifier: 5
