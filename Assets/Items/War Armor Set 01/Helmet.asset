@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e69ad7f75be6094b8c559eaca697013, type: 3}
-  m_Name: Gloves
+  m_Name: Helmet
   m_EditorClassIdentifier: 
-  name: Gloves
-  icon: {fileID: 21300000, guid: d4f5634edede200468fc1ccf30e6f3a1, type: 3}
+  name: Helmet
+  icon: {fileID: 21300000, guid: fd6e4fc32c78509458fc45ea4a478ba8, type: 3}
   isDefaultItem: 0
-  equipSlot: 2
-  mesh: {fileID: 8369559136705072077, guid: 2c840b2e658230940beaf98e19096e30, type: 3}
-  coveredMeshRegions: 01000000
-  armorModifier: 0
-  damageModifier: 5
+  equipSlot: 0
+  mesh: {fileID: 4094870215909593614, guid: f685137c7105e5045a0487fb57da2fb5, type: 3}
+  coveredMeshRegions: 
+  armorModifier: 3
+  damageModifier: 0
